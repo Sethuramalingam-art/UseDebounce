@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import useDebounce from "./useDebounce";
 
 interface post {
   userId: number;
@@ -14,6 +15,8 @@ function App() {
   const [search, setSearch] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const debounceSearch = useDebounce(search, 500);
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -26,7 +29,7 @@ function App() {
       setLoading(false);
     }
     fetchData();
-  }, [search]);
+  }, [debounceSearch]);
   const handleSearch = (e: any) => {
     setSearch(e.target.value);
   };
