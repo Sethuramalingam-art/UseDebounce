@@ -1,24 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+
+interface post {
+  userId: number;
+  id: number;
+  title: string;
+  body: number;
+}
 
 function App() {
+  const [postList, setPostList] = useState<post[]>([]);
+  const [search, setSearch] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      const data = await fetch(
+        `https://jsonplaceholder.typicode.com/posts`
+      ).then((res) => {
+        return res.json();
+      });
+      setPostList(data);
+      setLoading(false);
+    }
+    fetchData();
+  }, [search]);
+  const handleSearch = (e: any) => {
+    setSearch(e.target.value);
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <span>Search Posts using Debounce</span>
+      <input
+        type="text"
+        placeholder="search posts..."
+        onChange={handleSearch}
+      />
     </div>
   );
 }
